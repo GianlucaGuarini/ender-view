@@ -1,0 +1,184 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <style>
+      :root {
+        --indigo-dye: #043b58ff;
+        --electric-blue: #6deeecff;
+        --black: #000000ff;
+        --midnight-green: #005771ff;
+        --blue-green: #0299caff;
+        --amethyst: #925dc1ff;
+        --plum-web: #da99dcff;
+        --indigo-dye-2: #01457cff;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        background: var(--indigo-dye);
+        font-family:
+          'Fira Mono', 'JetBrains Mono', 'Cascadia Code', 'Menlo', 'Monaco',
+          'Consolas', monospace;
+        color: var(--electric-blue);
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 30px 0 20px 0;
+        min-width: 260px;
+        max-width: 340px;
+      }
+
+      ul li {
+        padding: 14px 24px;
+        cursor: pointer;
+        margin: 8px 0;
+        background: var(--midnight-green);
+        border-radius: 0.5rem;
+        transition:
+          background 0.2s,
+          transform 0.2s,
+          border-color 0.2s;
+        box-shadow: none;
+        position: relative;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+        color: var(--electric-blue);
+        border: 2px solid var(--blue-green);
+      }
+
+      ul li:hover {
+        background: var(--blue-green);
+        color: var(--black);
+        transform: scale(1.03);
+        border-color: var(--amethyst);
+      }
+
+      ul li:after {
+        content: '✖';
+        color: var(--plum-web);
+        font-size: 0.95em;
+        margin-left: 12px;
+        opacity: 0.7;
+        transition: opacity 0.2s;
+        position: absolute;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+      }
+
+      ul li.added {
+        background: var(--indigo-dye-2);
+        border: 2px solid var(--blue-green);
+      }
+
+      button {
+        background: var(--midnight-green);
+        border: 2px solid var(--amethyst);
+        border-radius: 0.5rem;
+        color: var(--electric-blue);
+        font-size: 1.1em;
+        font-weight: 600;
+        padding: 10px 28px;
+        margin: 0 10px;
+        box-shadow: none;
+        cursor: pointer;
+        transition:
+          color 0.2s,
+          background 0.2s,
+          border-color 0.3s;
+        outline: none;
+        position: relative;
+        overflow: hidden;
+        z-index: 1;
+      }
+
+      button:hover,
+      button:focus {
+        background: var(--blue-green);
+        border-color: var(--amethyst);
+        color: var(--black);
+      }
+    </style>
+  </head>
+
+  <body>
+    <ul>
+      <li>Matt</li>
+      <li>Sara</li>
+      <li>John</li>
+      <li>Janet</li>
+    </ul>
+    <div>
+      <button class="reverse">reverse</button>
+      <button class="add">add</button>
+    </div>
+    <script type="module">
+      import { createEnderView, animate, $ } from '../dist/index.js'
+
+      const names = ['Jack', 'Laura', 'Amanda', 'Michael', 'Rob', 'Julia']
+      const reverse = document.querySelector('.reverse')
+      const add = document.querySelector('.add')
+      const ul = document.querySelector('ul')
+
+      const enderview = createEnderView('li', {
+        duration: 300,
+        leaveProps: { easing: 'ease-out' },
+        enterProps: { delay: 300, duration: 300, easing: 'ease-in' },
+        leaveCss: 'transform: translateX(-64px); opacity: 0;',
+        enterCss: 'transform: translateX(64px); opacity: 0;',
+      })
+
+      reverse.addEventListener('click', function () {
+        // update the DOM nodes position
+        animate(() => {
+          $('li')
+            .reverse()
+            .map((li) => {
+              ul.appendChild(li)
+            })
+        })
+      })
+
+      ul.addEventListener('click', (event) => {
+        const closestLi = event.target
+
+        if (closestLi.tagName.toLowerCase() !== 'li') return
+
+        animate(() => {
+          closestLi.remove()
+        })
+      })
+
+      add.addEventListener('click', function () {
+        const lis = $('li')
+        const li = document.createElement('li')
+        const index = ~~(ul.children.length * Math.random())
+
+        li.classList.remove('added')
+        li.innerHTML = names[~~(Math.random() * names.length)]
+        li.classList.add('added')
+
+        enderview.addElement(li)
+
+        // chain transitions
+        animate(() => {
+          ul.insertBefore(li, ul.children[index])
+        }).finished.then(
+          () =>
+            animate(() => {
+              li.classList.remove('added')
+            }).finished,
+        )
+      })
+    </script>
+  </body>
+</html>

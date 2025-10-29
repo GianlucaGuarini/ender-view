@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        --indigo-dye: #043b58ff;
+        --electric-blue: #6deeecff;
+        --black: #000000ff;
+        --midnight-green: #005771ff;
+        --blue-green: #0299caff;
+        --amethyst: #925dc1ff;
+        --plum-web: #da99dcff;
+        --indigo-dye-2: #01457cff;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        background: var(--indigo-dye);
+        min-height: 100vh;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        font-family:
+          'Fira Mono', 'JetBrains Mono', 'Cascadia Code', 'Menlo', 'Monaco',
+          'Consolas', monospace;
+        letter-spacing: 0.03em;
+      }
+
+      .box {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 250px;
+        height: 250px;
+        color: var(--electric-blue);
+        font-size: 1.2rem;
+        font-weight: 500;
+        background: var(--midnight-green);
+        border-radius: 0.5rem;
+        box-shadow: none;
+        border: 3px solid var(--blue-green);
+        padding: 2.2rem 3.5rem;
+        transition:
+          border-color 0.22s cubic-bezier(0.4, 2, 0.6, 1),
+          transform 0.22s cubic-bezier(0.4, 2, 0.6, 1),
+          color 0.22s,
+          background 0.22s;
+        cursor: pointer;
+        user-select: none;
+        text-shadow: none;
+      }
+
+      .box:hover {
+        background: var(--blue-green);
+        color: var(--black);
+        border-color: var(--amethyst);
+      }
+
+      .box > span {
+        position: relative;
+        z-index: 1;
+      }
+
+      .box > * {
+        position: relative;
+        z-index: 1;
+      }
+
+      .box::after {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="box"><span>Click me to change my position and size</span></div>
+    <script type="module">
+      import { $, createEnderView, animate } from '../dist/index.js'
+      const box = $('.box')[0]
+
+      const enderView = createEnderView(box, {
+        duration: 300,
+      })
+
+      box.addEventListener('click', function () {
+        const size = Math.max(~~(Math.random() * 500), 350)
+
+        animate(() => {
+          box.style.width = `${size}px`
+          box.style.height = `${size}px`
+          box.style.top = `${~~(Math.random() * (window.innerHeight - size))}px`
+          box.style.left = `${~~(Math.random() * (window.innerWidth - size))}px`
+        })
+      })
+    </script>
+  </body>
+</html>

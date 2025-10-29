@@ -1,0 +1,171 @@
+<!doctype html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        --indigo-dye: #043b58ff;
+        --electric-blue: #6deeecff;
+        --black: #000000ff;
+        --midnight-green: #005771ff;
+        --blue-green: #0299caff;
+        --amethyst: #925dc1ff;
+        --plum-web: #da99dcff;
+        --indigo-dye-2: #01457cff;
+      }
+
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        background: var(--indigo-dye);
+        font-family:
+          'Fira Mono', 'JetBrains Mono', 'Cascadia Code', 'Menlo', 'Monaco',
+          'Consolas', monospace;
+        color: var(--electric-blue);
+      }
+
+      h1 {
+        margin: 40px 0 20px 0;
+        font-size: 2.5rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        color: var(--plum-web);
+        text-shadow: none;
+      }
+
+      p {
+        color: var(--amethyst);
+        margin-bottom: 0.5rem;
+      }
+
+      ul {
+        margin: 3rem auto;
+        list-style: none;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 0;
+        max-width: 1200px;
+        gap: 24px;
+      }
+
+      ul li {
+        overflow: hidden;
+        border-radius: 0.5rem;
+        border: 2px solid var(--blue-green);
+        box-shadow: none;
+        margin: 0;
+        width: 120px;
+        height: 120px;
+        cursor: pointer;
+        order: 1;
+        transition:
+          border-color 0.3s cubic-bezier(0.86, 0, 0.07, 1),
+          transform 0.3s cubic-bezier(0.86, 0, 0.07, 1),
+          background 0.3s;
+        background: var(--midnight-green);
+        position: relative;
+      }
+
+      ul li.big {
+        width: 440px;
+        height: 440px;
+        max-width: 90vw;
+        order: 0;
+        z-index: 2;
+        border-color: var(--amethyst);
+        background: var(--indigo-dye-2);
+      }
+      ul li img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition:
+          filter 0.3s,
+          transform 0.3s;
+        border-radius: 0.4rem;
+        filter: none;
+      }
+
+      ul li:hover,
+      ul li.big {
+        border-color: var(--plum-web);
+        background: var(--blue-green);
+      }
+
+      ul li:hover img,
+      ul li.big img {
+        filter: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Image gallery</h1>
+    <p>Click on a photo to make it bigger</p>
+    <ul>
+      <li><img src="https://unsplash.it/600/600?random=1" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=2" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=3" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=4" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=5" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=6" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=7" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=8" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=9" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=10" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=11" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=12" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=13" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=14" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=15" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=16" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=17" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=18" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=19" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=20" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=21" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=22" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=23" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=24" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=25" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=26" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=27" alt="" /></li>
+      <li><img src="https://unsplash.it/600/600?random=28" alt="" /></li>
+    </ul>
+    <script type="module">
+      import { $, createEnderView, animate } from '../dist/index.js'
+      const images = $('ul li')
+      const enderView = createEnderView(images, {
+        duration: 450,
+        easing: 'cubic-bezier(0.860, 0.000, 0.070, 1.000)',
+      })
+
+      function toggle(e) {
+        const el = e.currentTarget
+        const oldBig = document.querySelector('.big')
+
+        animate(() => {
+          if (oldBig && oldBig !== el) {
+            oldBig.classList.remove('big')
+          }
+
+          if (el.classList.contains('big')) {
+            el.classList.remove('big')
+          } else {
+            el.classList.add('big')
+          }
+        })
+      }
+
+      images.forEach((el) => {
+        el.addEventListener('click', toggle)
+      })
+    </script>
+  </body>
+</html>
