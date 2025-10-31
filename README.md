@@ -27,9 +27,9 @@ npm install ender-view
 
 ## Demos
 
-- <https://gianlucaguarini.com/ender-view/demos/box.html>
-- <https://gianlucaguarini.com/ender-view/demos/gallery.html>
-- <https://gianlucaguarini.com/ender-view/demos/list.html>
+- [Simple Box Click Animation](https://gianlucaguarini.com/ender-view/demos/box.html)
+- [Image gallery](https://gianlucaguarini.com/ender-view/demos/gallery.html)
+- [List animation](https://gianlucaguarini.com/ender-view/demos/list.html)
 
 ## Usage
 
