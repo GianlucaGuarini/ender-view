@@ -37,6 +37,17 @@ export type EnderViewAnimationProperties = {
   animationName?: string
 }
 
+export type EnderView<
+  T extends EnderViewSupportedElement | EnderViewSupportedElement[] | string,
+> = {
+  cleanup: () => EnderView<T>
+  updateOptions: (newOptions: Partial<EnderViewOptions>) => EnderView<T>
+  addElement: (el: EnderViewSupportedElement) => EnderView<T>
+  removeElement: (el: EnderViewSupportedElement) => EnderView<T>
+  addElements: (selector: T) => EnderView<T>
+  removeElements: (selector: T) => EnderView<T>
+}
+
 /**
  * Options for configuring a view transition in EnderView
  *
@@ -221,16 +232,16 @@ export const isViewTransitionSupported = (): boolean =>
   typeof document !== 'undefined' && !!document.startViewTransition
 
 /**
- * Initializes and manages view transitions for the given DOM elements
+ * Creates and manages view transitions for the specified DOM elements
  *
- * @template T - The type of selector, can be a supported element, array of elements, or string
- * @param selector - The DOM selector or element(s) to apply the view transition to
+ * @template T - The selector type, can be a supported element, array of elements, or string
+ * @param selector - The DOM selector or element(s) to manage with the view transition
  * @param options - Optional configuration for the view transition
- * @returns A function to trigger the animation, with a cleanup method to remove styles
+ * @returns An object with methods to control the transition and manage elements
  *
- * The returned function (`animate`) can be called to trigger the view transition animation
- * It also exposes methods:
+ * The returned object provides the following methods:
  *   - cleanup(): Removes all applied styles and injected CSS
+ *   - updateOptions(newOptions): Updates the transition options
  *   - addElement(el): Adds a single element to be managed by the transition
  *   - removeElement(el): Removes a single element from management
  *   - addElements(selector): Adds multiple elements by selector
@@ -241,7 +252,7 @@ export const createEnderView = <
 >(
   selector: T,
   options?: Partial<EnderViewOptions>,
-) => {
+): EnderView<T> => {
   // Create the elements set to store the DOM nodes we have upgraded to support the animations
   const els: Set<EnderViewSupportedElement> = new Set()
   // Create a manager for dynamic CSS injection and removal
@@ -276,7 +287,7 @@ export const createEnderView = <
   const updateCss = (newOptions: Partial<EnderViewOptions>) =>
     styleSheetManager.add(createTransitionCss(viewTransitionId, newOptions))
 
-  const enderView = {
+  const enderView: EnderView<T> = {
     /**
      * Cleans up the applied view transition styles and removes the injected CSS
      */
@@ -342,8 +353,11 @@ export const createEnderView = <
     },
   }
 
+  // initial setup
+
   // Create the initial css needed for the transitions
   updateCss(mergedOptions)
+
   // Setup the DOM Nodes for the view transitions
   enderView.addElements(selector)
 

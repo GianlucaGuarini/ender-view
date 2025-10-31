@@ -36,10 +36,10 @@ npm install ender-view
 ### Basic Example
 
 ```typescript
-import { createViewTransition } from 'ender-view'
+import { createEnderView, animate } from 'ender-view'
 
-// Select the element to animate
-const animate = createViewTransition('#my-element', {
+// Select and setup the element to animate
+createEnderView('#my-element', {
   enterCss: 'opacity: 0;',
   leaveCss: 'opacity: 0;',
   easing: 'ease',
@@ -55,15 +55,14 @@ animate(() => {
 ### Multiple Elements Example
 
 ```typescript
-const animate = createViewTransition(
-  [document.querySelector('#el1'), document.querySelector('#el2')],
-  {
-    enterCss: 'transform: scale(0.5); opacity: 0;',
-    leaveCss: 'transform: scale(0.8); opacity: 0;',
-    enterProps: { easing: 'ease-in', duration: 400, delay: 0 },
-    leaveProps: { easing: 'ease-out', duration: 400, delay: 0 },
-  },
-)
+import { createEnderView, animate } from 'ender-view'
+
+createEnderView('li', {
+  enterCss: 'transform: scale(0.5); opacity: 0;',
+  leaveCss: 'transform: scale(0.8); opacity: 0;',
+  enterProps: { easing: 'ease-in', duration: 400, delay: 0 },
+  leaveProps: { easing: 'ease-out', duration: 400, delay: 0 },
+})
 
 animate(() => {
   // Update both elements in the DOM
@@ -72,27 +71,38 @@ animate(() => {
 
 ### API
 
-#### `createViewTransition(target, options)`
+#### `createEnderView(target, options)`
 
-Returns an `animate` function with additional methods:
+Returns an `EnderView` object with the following methods:
 
-- `animate(domUpdateCallback: () => void, newOptions?: Partial<EnderViewOptions>): ViewTransition`  
-  Triggers the transition and runs the DOM update callback. It returns the native ViewTransition object
+- `cleanup(): EnderViewController`  
+  Removes all applied styles and injected CSS
 
-- `animate.addElement(el: HTMLElement | SVGAElement): void`  
-  Add an element to the transition group. Normally that's needed to animate the incoming DOM nodes
+- `updateOptions(newOptions: Partial<EnderViewOptions>): EnderViewController`  
+  Updates the transition options
 
-- `animate.addElements(selector | HTMLElement[] | SVGAElement[]): void`  
-  Add multiple elements to the transition group
+- `addElement(el: HTMLElement | SVGElement): EnderViewController`  
+  Adds a single element to be managed by the transition
 
-- `animate.removeElement(el: HTMLElement | SVGAElement): void`  
-  Remove an element from the transition group
+- `removeElement(el: HTMLElement | SVGElement): EnderViewController`  
+  Removes a single element from management
 
-- `animate.removeElements(selector | HTMLElement[] | SVGAElement[]): void`  
-  Remove multiple elements to the transition group
+- `addElements(selector: string): EnderViewController`  
+  Adds multiple elements by selector
 
-- `animate.cleanup(): void`  
-  Remove injected styles and clean up resources
+- `removeElements(selector: string): EnderViewController`  
+  Removes multiple elements by selector
+
+#### `animate(domUpdateFn)`
+
+Triggers a view transition animation. Accepts a function that updates the DOM as its argument. If the View Transition API is supported, the transition will use it; otherwise, it will gracefully fall back to a View Transition mock API
+
+Example:
+
+```typescript
+animate(() => {
+  // Update your DOM here
+})
 
 #### Utility Export
 
@@ -103,8 +113,7 @@ Returns an `animate` function with additional methods:
 - If the View Transition API is not supported, transitions fall back to CSS animations
 - If a selector matches no elements, the transition will be a no-op
 - If you call `cleanup()`, all injected styles are removed and further transitions will not apply styles
-- You can dynamically add or remove elements from the transition group at any time using `add` and `remove`
-- The library works with both `HTMLElement` and `SVGAElement`
+- You can dynamically add or remove elements from the transition group at any time using `addElement|s` and `removeElement|s`
 
 See the source for full type documentation and advanced options
 
@@ -113,3 +122,4 @@ See the source for full type documentation and advanced options
 The name **ender-view** is inspired by the Ender Pearl from Minecraft. Just as the Ender Pearl allows players to teleport instantly to another location, this library "teleports" your DOM elements to new states with smooth, animated transitions. The goal is to make moving between different views or UI states as seamless and magical as using an Ender Pearl in the game
 
 <img src="https://github.com/GianlucaGuarini/ender-view/blob/main/ender-pearl.webp?raw=true" alt="Ender Pearl"/>
+```
