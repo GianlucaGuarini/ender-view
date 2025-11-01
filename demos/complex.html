@@ -118,7 +118,11 @@
           const normalizedCards = cards.filter((c) => c !== card)
 
           main.append(...normalizedCards)
-          main.moveBefore(card, normalizedCards[cardIndex] || null)
+
+          if (normalizedCards[cardIndex])
+            main.insertBefore(card, normalizedCards[cardIndex])
+          else main.append(card)
+
           card.classList.remove('overlay')
         }).finished.then(() =>
           animate(() => {
