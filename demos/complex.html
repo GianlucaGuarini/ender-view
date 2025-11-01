@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SPA Recipe Cards - Ender View Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script type="module">
+      import {
+        $,
+        createEnderView,
+        animate,
+      } from 'https://unpkg.com/ender-view?module'
+
+      const recipes = [
+        {
+          id: 0,
+          title: 'Spaghetti Carbonara',
+          desc: 'Classic Italian pasta with eggs, cheese, pancetta, and pepper.',
+          details:
+            '1. Boil pasta. 2. Fry pancetta. 3. Mix eggs and cheese. 4. Combine all.',
+          img: 'https://unsplash.it/600/600?random=1',
+        },
+        {
+          id: 1,
+          title: 'Chicken Tikka Masala',
+          desc: 'Tender chicken in creamy spiced tomato sauce.',
+          details:
+            '1. Marinate chicken. 2. Grill. 3. Simmer in sauce. 4. Serve with rice.',
+          img: 'https://unsplash.it/600/600?random=2',
+        },
+        {
+          id: 2,
+          title: 'Avocado Toast',
+          desc: 'Toasted bread topped with smashed avocado and seasoning.',
+          details:
+            '1. Toast bread. 2. Smash avocado. 3. Spread and season. 4. Enjoy!',
+          img: 'https://unsplash.it/600/600?random=3',
+        },
+        {
+          id: 3,
+          title: 'Beef Stroganoff',
+          desc: 'Creamy beef and mushroom sauce served over noodles.',
+          details:
+            '1. Sauté beef. 2. Add mushrooms. 3. Stir in cream. 4. Serve over noodles.',
+          img: 'https://unsplash.it/600/600?random=4',
+        },
+        {
+          id: 4,
+          title: 'Caesar Salad',
+          desc: 'Crisp romaine lettuce with Caesar dressing and croutons.',
+          details:
+            '1. Chop lettuce. 2. Toss with dressing. 3. Add croutons and cheese.',
+          img: 'https://unsplash.it/600/600?random=5',
+        },
+        {
+          id: 5,
+          title: 'Pancakes',
+          desc: 'Fluffy pancakes perfect for breakfast.',
+          details:
+            '1. Mix batter. 2. Pour on griddle. 3. Flip. 4. Serve with syrup.',
+          img: 'https://unsplash.it/600/600?random=6',
+        },
+        {
+          id: 6,
+          title: 'Sushi Rolls',
+          desc: 'Rice and fillings wrapped in seaweed.',
+          details: '1. Prepare rice. 2. Add fillings. 3. Roll and slice.',
+          img: 'https://unsplash.it/600/600?random=7',
+        },
+        {
+          id: 7,
+          title: 'Tomato Soup',
+          desc: 'Smooth and creamy tomato soup.',
+          details:
+            '1. Cook tomatoes. 2. Blend. 3. Simmer with cream. 4. Serve hot.',
+          img: 'https://unsplash.it/600/600?random=8',
+        },
+      ]
+
+      function renderCards() {
+        return recipes
+          .map(
+            (r) => `
+                            <div class="card" data-id="${r.id}">
+                              <img class="card-img" src="${r.img}" alt="${r.title} image" />
+                              <h2>${r.title}</h2>
+                              <p>${r.desc}</p>
+                            </div>
+                          `,
+          )
+          .join('')
+      }
+
+      function showRecipe(header, footer, card, closeBtn) {
+        // Animate transition using EnderView API
+        animate(() => {
+          // Fade out header/footer
+          header.remove()
+          footer.remove()
+        }).finished.then(() =>
+          animate(() => {
+            card.classList.add('overlay')
+            card.remove()
+            closeBtn.style.display = 'block'
+
+            document.body.prepend(card)
+
+            $('.card:not(.overlay)').forEach((c) => {
+              c.remove()
+            })
+          }),
+        )
+      }
+
+      function closeRecipe(header, footer, card, main, cards, closeBtn) {
+        animate(() => {
+          const cardIndex = Number(card.dataset.id)
+          const normalizedCards = cards.filter((c) => c !== card)
+
+          main.append(...normalizedCards)
+          main.moveBefore(card, normalizedCards[cardIndex] || null)
+          card.classList.remove('overlay')
+        }).finished.then(() =>
+          animate(() => {
+            // Fade in header/footer
+            document.body.prepend(header)
+            document.body.append(footer)
+            closeBtn.style.display = 'none'
+          }),
+        )
+      }
+
+      window.onload = () => {
+        const header = $('header')[0]
+        const footer = $('footer')[0]
+        const main = $('main')[0]
+        const closeBtn = $('.close-btn')[0]
+
+        main.innerHTML = renderCards()
+
+        const cards = $('.card')
+
+        main.addEventListener('click', (e) => {
+          const card = e.target.closest('.card:not(.overlay)')
+
+          if (!card) return
+
+          showRecipe(header, footer, card, closeBtn)
+        })
+
+        closeBtn.addEventListener('click', () => {
+          closeRecipe(
+            header,
+            footer,
+            $('.card.overlay')[0],
+            main,
+            cards,
+            closeBtn,
+          )
+        })
+
+        createEnderView('.card', {
+          easing: 'ease-in-out',
+          leaveCss: 'opacity: 0; transform: scale(0.8);',
+          enterCss: 'opacity: 0; transform: scale(0.8);',
+        })
+
+        createEnderView(header, {
+          easing: 'ease-in-out',
+          leaveCss: 'transform: translateY(-100%);',
+          enterCss: 'transform: translateY(-100%);',
+        })
+
+        createEnderView(footer, {
+          easing: 'ease-in-out',
+          leaveCss: 'transform: translateY(100%);',
+          enterCss: 'transform: translateY(100%);',
+        })
+
+        createEnderView(closeBtn, {
+          enterCss: 'transform: translateY(-100%)',
+          leaveCss: 'transform: translateY(-100%)',
+        })
+      }
+    </script>
+    <style>
+      :root {
+        --primary: #ffb347;
+        --accent: #ff6961;
+        --bg: #f7f7f7;
+        --card-bg: #fff;
+        --radius: 18px;
+        --shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        font-family: system-ui, sans-serif;
+        background: var(--bg);
+        color: #222;
+        display: flex;
+        flex-direction: column;
+        min-height: 100%;
+      }
+
+      header,
+      footer {
+        text-align: center;
+        padding: 1.5rem;
+        background: var(--primary);
+        color: #fff;
+        font-weight: bold;
+        font-size: 1.3rem;
+        transition: opacity 0.25s;
+      }
+
+      footer {
+        margin-top: auto;
+      }
+
+      main {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 2rem;
+        padding: 2rem;
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+      }
+      .card {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        padding: 2rem 1.5rem;
+        cursor: pointer;
+        transition:
+          box-shadow 0.2s,
+          transform 0.2s;
+        position: relative;
+        overflow: hidden;
+      }
+      .card:hover {
+        box-shadow: 0 8px 32px rgba(255, 105, 97, 0.15);
+      }
+      .card.overlay {
+        position: absolute;
+        overflow: auto;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        border-radius: 0 !important;
+        box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.12);
+        cursor: default;
+        padding-top: 4rem;
+        padding-bottom: 2rem;
+      }
+      .card h2 {
+        margin-top: 0;
+      }
+
+      .card.overlay .card-img {
+        height: 400px;
+      }
+
+      .card-img {
+        width: 100%;
+        height: 160px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 1rem;
+        background: #eee;
+        display: block;
+      }
+
+      .close-btn {
+        position: absolute;
+        display: none;
+        top: 1.2rem;
+        right: 1.5rem;
+        background: var(--accent);
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 1.5rem;
+        cursor: pointer;
+        z-index: 10;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        transition: background 0.2s;
+      }
+      .close-btn:hover {
+        background: #e55b50;
+      }
+    </style>
+  </head>
+  <body>
+    <header>🍲 My Recipe Book</header>
+    <button class="close-btn">&times;</button>
+    <main></main>
+    <footer>Ender View Demo</footer>
+  </body>
+</html>
