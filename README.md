@@ -4,7 +4,7 @@
 
 > Smooth DOM view transitions made easy
 
-A lightweight TypeScript utility for managing View Transitions and CSS animations in modern browsers.<br/>
+A lightweight TypeScript utility for managing [View Transitions](https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API) and CSS animations in modern browsers<br/>
 It provides a simple API to trigger animated transitions between DOM states, leveraging the View Transition API when available, and falling back gracefully otherwise
 
 ## Features
@@ -27,7 +27,7 @@ npm install ender-view
 
 ## Demos
 
-- [Simple Box Click Animation](https://gianlucaguarini.com/ender-view/demos/box.html)
+- [Hello World Box](https://gianlucaguarini.com/ender-view/demos/box.html)
 - [Image gallery](https://gianlucaguarini.com/ender-view/demos/gallery.html)
 - [List animation](https://gianlucaguarini.com/ender-view/demos/list.html)
 
@@ -65,7 +65,33 @@ createEnderView('li', {
 })
 
 animate(() => {
-  // Update both elements in the DOM
+  // Update all list elements in the DOM
+})
+```
+
+### Complex SPA Page Transitions
+
+```typescript
+import { createEnderView, animate } from 'ender-view'
+
+createEnderView('.header', {
+  enterCss: 'transform: scale(0.5); opacity: 0;',
+  leaveCss: 'transform: scale(0.8); opacity: 0;',
+  enterProps: { easing: 'ease-in', duration: 400, delay: 0 },
+  leaveProps: { easing: 'ease-out', duration: 400, delay: 0 },
+})
+
+createEnderView('.footer', {
+  leaveCss: 'transform: translateY(-100%)',
+})
+
+createEnderView('.main', {
+  enterCss: 'opacity: 0;'
+  leaveCss: 'opacity: 0;'
+})
+
+animate(() => {
+  // update the whole page
 })
 ```
 
@@ -103,6 +129,7 @@ Example:
 animate(() => {
   // Update your DOM here
 })
+```
 
 #### Utility Export
 
@@ -122,4 +149,7 @@ See the source for full type documentation and advanced options
 The name **ender-view** is inspired by the Ender Pearl from Minecraft. Just as the Ender Pearl allows players to teleport instantly to another location, this library "teleports" your DOM elements to new states with smooth, animated transitions. The goal is to make moving between different views or UI states as seamless and magical as using an Ender Pearl in the game
 
 <img src="https://github.com/GianlucaGuarini/ender-view/blob/main/ender-pearl.webp?raw=true" alt="Ender Pearl"/>
-```
+
+## Inspiration
+
+This project is inspired by my previous work on [animore](https://github.com/GianlucaGuarini/animore), and is a continuation of the experience made with [animore](https://github.com/GianlucaGuarini/animore), building upon its concepts to provide even smoother and more flexible DOM view transitions

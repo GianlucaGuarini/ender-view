@@ -292,8 +292,12 @@ export const createEnderView = <
      * Cleans up the applied view transition styles and removes the injected CSS
      */
     cleanup() {
+      // remove the inline css on the DOM nodes
       els.forEach(removeInlineStyleFromEl)
+      // remove the injected css
       styleSheetManager.remove()
+      // clean up the set
+      els.forEach(els.delete)
 
       return this
     },
