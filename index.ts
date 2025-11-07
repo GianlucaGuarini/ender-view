@@ -297,7 +297,7 @@ export const createEnderView = <
       // remove the injected css
       styleSheetManager.remove()
       // clean up the set
-      els.forEach(els.delete)
+      els.forEach(els.delete.bind(els))
 
       return this
     },
