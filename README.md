@@ -87,8 +87,8 @@ createEnderView('.footer', {
 })
 
 createEnderView('.main', {
-  enterCss: 'opacity: 0;'
-  leaveCss: 'opacity: 0;'
+  enterCss: 'opacity: 0;',
+  leaveCss: 'opacity: 0;',
 })
 
 animate(() => {
